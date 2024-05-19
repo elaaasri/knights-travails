@@ -1,88 +1,80 @@
-// node class :
-class Node {
-  constructor(vertex, coords, neighbors) {
-    this.vertex = vertex;
-    this.coords = coords;
-    this.neighbors = neighbors;
-  }
-}
+// // node class :
+// class Node {
+//   constructor(vertex, coords, neighbors) {
+//     this.vertex = vertex;
+//     this.coords = coords;
+//     this.neighbors = neighbors;
+//   }
+// }
 // board class :
 class Board {
   constructor() {
+    this.rows = 8;
+    this.columns = 8;
     this.board = [];
   }
+  // returns a 2D array :
   buildGraph() {
-    let rows = 8;
-    let columns = 8;
-    for (let i = 0; i < rows; i++) {
+    // creating 2D array :
+    for (let i = 0; i < this.rows; i++) {
       this.board[i] = [];
-      for (let j = 0; j < columns; j++) {
+      for (let j = 0; j < this.columns; j++) {
         this.board[i][j] = 0;
       }
     }
+    // return this.board;
   }
   knightMoves(start, end) {
+    // start knight move :
     let startRow = start[0];
     let startColumn = start[1];
+    // end knight move :
+    let endRow = end[0];
+    let endColumn = end[1];
+    // all other knight moves :
+    let allKnightMovesArr = [
+      [startRow - 1, startColumn - 2],
+      [startRow + 1, startColumn - 2],
+      [startRow - 1, startColumn + 2],
+      [startRow + 1, startColumn + 2],
+      [startRow - 2, startColumn - 1],
+      [startRow - 2, startColumn + 1],
+      [startRow + 2, startColumn - 1],
+      [startRow + 2, startColumn + 1],
+    ];
+    // adding legal knight start/end move :
+    let knightStartMove = this.isWithinBounds(startRow, startColumn);
+    let knightEndMove = this.isWithinBounds(endRow, endColumn);
 
-    // let allKnightMoves = [
-    //   [startRow - 1, startColumn - 2],
-    //   [startRow + 1, startColumn - 2],
-    //   [startRow - 1, startColumn + 2],
-    //   [startRow + 1, startColumn + 2],
-    //   [startRow - 2, startColumn - 1],
-    //   [startRow - 2, startColumn + 1],
-    //   [startRow + 2, startColumn - 1],
-    //   [startRow + 2, startColumn + 1],
-    // ];
-
-    let startMove = this.isWithinBounds(startRow, startColumn);
-    let firstLeftMove = this.isWithinBounds(startRow - 1, startColumn - 2);
-    let secondLeftMove = this.isWithinBounds(startRow + 1, startColumn - 2);
-    let firstRightMove = this.isWithinBounds(startRow - 1, startColumn + 2);
-    let secondRightMove = this.isWithinBounds(startRow + 1, startColumn + 2);
-    let firstUpMove = this.isWithinBounds(startRow - 2, startColumn - 1);
-    let secondUpMove = this.isWithinBounds(startRow - 2, startColumn + 1);
-    let firstDowntMove = this.isWithinBounds(startRow + 2, startColumn - 1);
-    let secondDowntMove = this.isWithinBounds(startRow + 2, startColumn + 1);
-
-    if (startMove) {
+    if (knightStartMove) {
       this.board[startRow][startColumn] = "s";
-      if (firstLeftMove) {
-        this.board[startRow - 1][startColumn - 2] = "l";
-      }
-      if (secondLeftMove) {
-        this.board[startRow + 1][startColumn - 2] = "l";
-      }
-      if (firstRightMove) {
-        this.board[startRow - 1][startColumn + 2] = "r";
-      }
-      if (secondRightMove) {
-        this.board[startRow + 1][startColumn + 2] = "r";
-      }
-      if (firstUpMove) {
-        this.board[startRow - 2][startColumn - 1] = "u";
-      }
-      if (secondUpMove) {
-        this.board[startRow - 2][startColumn + 1] = "u";
-      }
-      if (firstDowntMove) {
-        this.board[startRow + 2][startColumn - 1] = "d";
-      }
-      if (secondDowntMove) {
-        this.board[startRow + 2][startColumn + 1] = "d";
-      }
-    }
+    } else return "invalid knight start move!";
 
-    this.board.map((a) => {
-      console.log(a);
+    if (knightEndMove) {
+      this.board[endRow][endColumn] = "e";
+    } else return "invalid knight end move!";
+
+    // adding other legal knight moves :
+    allKnightMovesArr.map((move) => {
+      // checks each move indices if it's legal in the board before adding it :
+      let isEachKnightMovePossible = this.isWithinBounds(move[0], move[1]);
+      // checking knight start/ end move before adding other moves :
+      if (knightStartMove && knightEndMove && isEachKnightMovePossible) {
+        this.board[move[0]][move[1]] = "m";
+        // this.getShortestPath(move);
+      }
     });
+    this.board.map((a) => console.log(a));
   }
-  isWithinBounds(row, column) {
-    return row >= 0 && row < 8 && column >= 0 && column < 8;
+  // checks if the given move indices is in the 2D array :
+  isWithinBounds(x, y) {
+    return x >= 0 && x < this.rows && y >= 0 && y < this.columns;
   }
+  // getShortestPath(newSquare) {
+  //   console.log(newSquare);
+  // }
 }
 
 const board = new Board();
 console.log(board.buildGraph());
-console.log(board.knightMoves([5, 5], [1, 5]));
+console.log(board.knightMoves([1, 7], [1, 1]));
