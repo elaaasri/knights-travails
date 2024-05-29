@@ -1,19 +1,11 @@
-// // node class :
-// class Node {
-//   constructor(vertex, coords, neighbors) {
-//     this.vertex = vertex;
-//     this.coords = coords;
-//     this.neighbors = neighbors;
-//   }
-// }
-// board class :
+// class board :
 class Board {
   constructor() {
     this.rows = 8;
     this.columns = 8;
     this.board = [];
   }
-  // returns a 2D array :
+  // returns a 2D board :
   buildGraph() {
     // creating 2D array :
     for (let i = 0; i < this.rows; i++) {
@@ -22,17 +14,16 @@ class Board {
         this.board[i][j] = 0;
       }
     }
-    // return this.board;
   }
   knightMoves(start, end) {
+    // build 2D array :
+    this.buildGraph();
     // start knight move :
-    let startRow = start[0];
-    let startColumn = start[1];
+    const [startRow, startColumn] = start;
     // end knight move :
-    let endRow = end[0];
-    let endColumn = end[1];
+    const [endRow, endColumn] = end;
     // all other knight moves :
-    let allKnightMovesArr = [
+    const otherKnightMoves = [
       [startRow - 1, startColumn - 2],
       [startRow + 1, startColumn - 2],
       [startRow - 1, startColumn + 2],
@@ -45,36 +36,40 @@ class Board {
     // adding legal knight start/end move :
     let knightStartMove = this.isWithinBounds(startRow, startColumn);
     let knightEndMove = this.isWithinBounds(endRow, endColumn);
+    // adding moves to board :
+    if (knightStartMove && knightEndMove) {
+      this.board[startRow][startColumn] = "s"; // start move.
+      this.board[endRow][endColumn] = "e"; // end move.
 
-    if (knightStartMove) {
-      this.board[startRow][startColumn] = "s";
-    } else return "invalid knight start move!";
-
-    if (knightEndMove) {
-      this.board[endRow][endColumn] = "e";
-    } else return "invalid knight end move!";
-
-    // adding other legal knight moves :
-    allKnightMovesArr.map((move) => {
-      // checks each move indices if it's legal in the board before adding it :
-      let isEachKnightMovePossible = this.isWithinBounds(move[0], move[1]);
-      // checking knight start/ end move before adding other moves :
-      if (knightStartMove && knightEndMove && isEachKnightMovePossible) {
+      // other legal knight moves :
+      const filterdOtherKnightMoves = otherKnightMoves.filter((move) =>
+        this.isWithinBounds(move[0], move[1])
+      );
+      filterdOtherKnightMoves.map((move) => {
         this.board[move[0]][move[1]] = "m";
-        // this.getShortestPath(move);
-      }
-    });
+        return;
+      });
+    } else return "start and end moves must be legal in the board!";
+    console.log("#".repeat(30));
     this.board.map((a) => console.log(a));
   }
-  // checks if the given move indices is in the 2D array :
+  // getShortestPath(newMoves, endMove) {
+  //   newMoves.forEach((move) => {
+  //     let queue = [move];
+  //     currentMove = queue.pop();
+  //     console.log(move);
+  //     this.knightMoves(move, endMove);
+  //   });
+  //   return `=> You made it in ${
+  //     allPaths.length
+  //   } moves!  Here's your path: \n ${JSON.stringify(allPaths)}`;
+  // }
+  // checks if the given move indices is in the 2D array board :
   isWithinBounds(x, y) {
     return x >= 0 && x < this.rows && y >= 0 && y < this.columns;
   }
-  // getShortestPath(newSquare) {
-  //   console.log(newSquare);
-  // }
 }
-
 const board = new Board();
-console.log(board.buildGraph());
-console.log(board.knightMoves([1, 7], [1, 1]));
+const start = [1, 1];
+const end = [6, 6];
+console.log(board.knightMoves(start, end));
