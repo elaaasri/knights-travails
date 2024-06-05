@@ -1,4 +1,4 @@
 # Knights-Travails : 
 
  ### A BFS search Solution to a Knight-Travails problem : 
-  - finds the shortest path a knight can move between two positions on a chessboard.
+  - Finds the shortest path a knight can move between two positions (start/end) on a chessboard.
